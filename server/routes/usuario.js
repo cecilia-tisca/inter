@@ -75,14 +75,32 @@ const app = express();
      })
   })
   
-  app.delete('/usuario', function(req, res){
-      let id = req.params.id;
+  app.delete('/usuario/:id', function(req, res){
+    //   let id = req.params.id;
   
-      res.json({
-          ok: 200,
-          msg: 'Usuario eliminado correctamente',
-          id:id
-      })
-  })
+    //   Usuario.deleteOne({_id: id}, (err, usuarioBorrado) => {
+    //    
+    //   })
+  
+let id = req.params.id;
+
+Usuario.findByIdAndUpdate(id, 
+    {activo: false}, {new: true, runValidators: true, context: 'query'}, 
+    (err, usrDB) => {
+    if(err) {
+        return res .status(400).json({
+            ok: false,
+            msg: 'Error al momento de eliminar',
+            err
+        })
+    }
+    
+        res.json({
+            ok: true,
+            msg: 'Usuario eliminado con exito',
+            usrDB
+        })
+    })
+})
 
   module.exports = app;
